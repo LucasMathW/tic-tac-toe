@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css" type="text/css" >
+  <title>tic-tac-toe</title>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  <div id="resul"></div>
+  <button id="btn-new-game" class="btn-game">Novo jogo</button>
+  <button id="btn-scoreboard" class="btn-game">Placar</button>
+  <button id="btn-reset-scoreboard" class="btn-game" >Zerar o placar</button>
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> 
+
+  <script type="module">
+    import TicTacToe from './js/game.js'
+    const game = new TicTacToe();
+
+    $("#canvas").on("click", function(event) {
+      
+      if (game.status == "") {
+        var params = game.newPlay(event);
+        game.renderSymbol(params.row, params.col);
+        game.changePlayer();
+      }
+    
+    });
+
+    $("#btn-new-game").on("click", function () {
+      game.newGame();
+    });
+    // $("#btn-scoreboard").on("click", function () {
+    //   game.showScoreboard(null);
+    // });
+    // $("#btn-reset-scoreboard").on("click", function () {
+    //   game.showScoreboard(null);
+    // });
+  </script>
+</body>
+</html>

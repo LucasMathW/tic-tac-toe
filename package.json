@@ -1,0 +1,10 @@
+{
+  "name": "tic-tac-toe",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "jquey": "^0.0.1-security"
+  }
+}
