@@ -18,26 +18,26 @@
 
   <script type="module">
     import TicTacToe from './js/game.js'
-    const game = new TicTacToe();
+    const canvas = document.getElementById('canvas')   
+    console.log('canvas', canvas)
 
-    $("#canvas").on("click", function(event) {
+    const context  = canvas.getContext('2d');
+    console.log('context', context)
+
+    const game = new TicTacToe(canvas);
+
+    // canvas.onclick((event)=> {
       
-      if (game.status == "") {
-        var params = game.newPlay(event);
-        game.renderSymbol(params.row, params.col);
-        game.changePlayer();
-      }
-    
-    });
+    // }) 
 
-    $("#btn-new-game").on("click", function () {
-      game.newGame();
-    });
-    // $("#btn-scoreboard").on("click", function () {
-    //   game.showScoreboard(null);
-    // });
-    // $("#btn-reset-scoreboard").on("click", function () {
-    //   game.showScoreboard(null);
+    // $("#canvas").on("click", function(event) {
+      
+    //   if (game.status == "") {
+    //     var params = game.newPlay(event);
+    //     // game.renderSymbol(params.row, params.col);
+    //     // game.changePlayer();
+    //   }
+    
     // });
   </script>
 </body>
