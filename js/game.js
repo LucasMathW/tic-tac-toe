@@ -1,270 +1,72 @@
+export default function ticTacToe(canvas){
+  this.canvas = canvas
+  this.status = null
 
-/**
- * Classe TicTacToe
- */
-export default function TicTacToe() {
+  this.dimentionColun = 0
+  this.dimentionRow = 0
 
-  const player1 = { name: 'Jogador 1', symbol: 'O', color: '#2ce0b7' }
-  
-  this.player1 = player1;
+  this.contex = false
+  this.status = ""
 
-  // Jogador 2
-  this.player2 = { name: 'Jogador 2', symbol: 'X', color: '#33b4d6' };
+  this._matrix = ""
+  this.isRunnig = false
 
-  // Status do jogo (vitoria ou empate)
-  this.status = "";
+  this.init()
 
-  // Jogador atual
-  this.currentPlayer = this.player1;
+}
 
-  // Largura do canvas
-  this.canvasWidth = 400;
+ticTacToe.prototype.init = function(){
+  const canvas = this.canvas
+  canvas.width = 400
+  canvas.height = 400
 
-  // Altura do canvas
-  this.canvasHeight = 400;
+  canvas.style.width = canvas.width
+  canvas.style.width = canvas.height
 
-  // Contexto de renderização do canvas
-  this._ctx = null;
+  this.dimentionColun = canvas.width / 3
+  this.dimentionRow = canvas.height / 3
 
-  // Matriz representando o tabuleiro
-  this._matrix = null;
+  this.contex = canvas.getContext('2d')
 
-  // Indica se a partida está em andamento ou não
-  this._isRunning = false;
+  this.newGame()
+}
 
-  // Largura da coluna no tabuleiro
-  this._colWidth = 0;
+ticTacToe.prototype.newGame = function(){
+  this.status = ""
+  // this._matrix = [
+  //   ["", "", ""],
+  //   ["", "", ""],
+  //   ["", "", ""] 
+  // ]
+  this.isRunnig = true
+  this.downBoard()
+}
 
-  // Altura da linha no tabuleiro
-  this._colHeight = 0;
+ticTacToe.prototype.downBoard = function(){
+  this.contex.strokeStyle = '#596575'
 
-  // Método de inicialização
-  this.init();
-};
+  this.contex.lineWidth = 3
 
-// Define o valor de algumas propriedades e inicia um novo jogo
-TicTacToe.prototype.init = function () {
-  var $canvas = $("canvas");
+  //Draw vertial line 1
+  this.contex.beginPath()
+  this.contex.moveTo(this.dimentionColun, 0)
+  this.contex.lineTo(this.dimentionColun, 400 )
+  this.contex.stroke()
 
-  // Dimensões do canvas
-  $canvas[0].width = this.canvasWidth;
-  $canvas[0].height = this.canvasHeight;
-  $canvas[0].style.width = this.canvasWidth;
-  $canvas[0].style.height = this.canvasHeight;
+  //Draw vertial line 2
+  this.contex.beginPath()
+  this.contex.moveTo(2 * this.dimentionColun, 0)
+  this.contex.lineTo(2 * this.dimentionColun, 400 )
+  this.contex.stroke()
 
-  // Dimensões das colunas (um terço da largura e da altura do canvas, respectivamente)
-  this._colWidth = this.canvasWidth / 3;
-  this._rowHeight = this.canvasHeight / 3;
+  this.contex.beginPath()
+  this.contex.moveTo(0, this.dimentionRow)
+  this.contex.lineTo(400, this.dimentionRow)
+  this.contex.stroke()
 
-  // Estamos dizendo que vamos desenhar imagens 2D
-  this._ctx = $canvas[0].getContext("2d");
+  this.contex.beginPath()
+  this.contex.moveTo(0, 2 * this.dimentionRow)
+  this.contex.lineTo(400, 2 * this.dimentionColun)
+  this.contex.stroke()
 
-  this.newGame();
-};
-
-// Inicia um novo jogo
-TicTacToe.prototype.newGame = function () {
-
-  // Limpa o status
-  this.status = "";
-
-  // Limpa o canvas
-  this._clearCanvas();
-
-  // Limpa a matriz
-  this._matrix = [
-      ["", "", ""],
-      ["", "", ""],
-      ["", "", ""]
-  ];
-
-  // Limpa o resultado
-  this._setResult('');
-
-  // Cria um novo tabuleiro
-  this._createBoard();
-
-  // Altera a flag de jogo em andamento
-  this._isRunning = true;
-};
-
-// Define uma nova jogada quando o jogador clica em uma região do canvas
-TicTacToe.prototype.newPlay = function (event) {
-  if (this._isRunning) {
-
-      // Obtem a coluna e a linha onde o jogador clicou
-      var col = Math.floor(event.offsetX / this._colWidth);
-      var row = Math.floor(event.offsetY / this._rowHeight);
-
-      // Verifica se a posição na matriz está vazia
-      if (this._matrix[row][col] == "") {
-          return { row, col };
-      }
-  }
-  return { row: -1, col: -1 };
-};
-
-// Alterna entre um jogador e outro
-TicTacToe.prototype.changePlayer = function () {
-  if (this.currentPlayer.name == this.player2.name) {
-      this.currentPlayer = this.player1;
-  }
-  else {
-      this.currentPlayer = this.player2;
-  }
-};
-
-// Desenha um símbolo no tabuleiro
-TicTacToe.prototype.renderSymbol = function (row, col) {
-
-  if (row != -1 && col != -1) {
-      
-      // Configura o canvas antes de desenhar o símbolo
-      this._ctx.fillStyle = this.currentPlayer.color;
-      this._ctx.font = (this.canvasWidth / 5) + "px Arial";
-      this._ctx.textAlign = "center";
-      this._ctx.textBaseline = "middle";
-      this._ctx.fillText(this.currentPlayer.symbol, col * this._colWidth + this._colWidth / 2, row * this._rowHeight + this._rowHeight / 2);
-      this._matrix[row][col] = this.currentPlayer.symbol;
-
-      // Verifica se houve vitória ou empate e encerra o jogo
-      if (this._isVictory()) {
-          this._setResult(this.currentPlayer.name + " venceu!");
-          this._isRunning = false;
-      }
-      else if (this._isTie()) {
-          this._setResult("Empate!");
-          this._isRunning = false;
-      }
-  }
-};
-
-// Verifica se houve empate
-TicTacToe.prototype._isTie = function () {
-  var count = 0;
-  var cols = this._matrix[0].length;
-  var rows = this._matrix.length;
-
-  // Conta a quantidade de posições com algum símbolo e compara com o total de posições
-  for (var i = 0; i < cols; i++) {
-      for (var j = 0; j < rows; j++) {
-          if (this._matrix[i][j] != "") {
-              count++;
-          }
-      }
-  }
-
-  var isTie = count == cols * rows;
-
-  if (isTie) {
-      this.status = "empate";
-  }
-
-  return isTie;
-};
-
-// Verifica se houve vitória
-TicTacToe.prototype._isVictory = function () {
-  if (
-      // Compara os símbolos na vertical
-      this._compareSymbols(this._matrix[0][0], this._matrix[1][0], this._matrix[2][0]) ||
-      this._compareSymbols(this._matrix[0][1], this._matrix[1][1], this._matrix[2][1]) ||
-      this._compareSymbols(this._matrix[0][2], this._matrix[1][2], this._matrix[2][2]) ||
-
-      // Compara os símbolos na horizontal
-      this._compareSymbols(this._matrix[0][0], this._matrix[0][1], this._matrix[0][2]) ||
-      this._compareSymbols(this._matrix[1][0], this._matrix[1][1], this._matrix[1][2]) ||
-      this._compareSymbols(this._matrix[2][0], this._matrix[2][1], this._matrix[2][2]) ||
-
-      // Compara os símbolos na diagonal
-      this._compareSymbols(this._matrix[0][0], this._matrix[1][1], this._matrix[2][2]) ||
-      this._compareSymbols(this._matrix[0][2], this._matrix[1][1], this._matrix[2][0])) {
-
-      // Houve vitória
-      this.status = "vitoria";
-
-      return true;
-  }
-  return false;
-};
-
-// Compara três símbolos
-TicTacToe.prototype._compareSymbols = function (a, b, c) {
-  return a == b && b == c && c != "";
-};
-
-// Exibe o resultado
-TicTacToe.prototype._setResult = function (text) {
-  $("#result").html(text);
-};
-
-// Exibe o placar
-TicTacToe.prototype.showScoreboard = function (score) {
-
-  this._setResult('');
-  this._clearCanvas();
-  this._isRunning = false;
-  this._ctx.fillStyle = "#ddd";
-  this._ctx.font = "30px Arial";
-  this._ctx.textAlign = "center";
-  this._ctx.textBaseline = "top";
-
-  this._clearCanvas();
-  
-  // Título
-  this._ctx.fillText("Placar", this.canvasWidth / 2, 40);
-
-  if (score == null) {
-      this._ctx.fillText("Nenhum placar", this.canvasWidth / 2, this.canvasHeight / 3);
-  }
-  else {
-      if (score.length > 0) {
-          for (var i = 0; i < score.length; i++) {
-              var player = score[i];
-              this._ctx.fillText(player.name + ": " + player.score + " pontos", this.canvasWidth / 2, (i + 1) * 80 + 40);
-          }
-      }
-      else {
-          this._ctx.fillText("Nenhum placar", this.canvasWidth / 2, this.canvasHeight / 3);
-      }
-  }
-};
-
-// Limpa o canvas
-TicTacToe.prototype._clearCanvas = function () {
-  this._ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-};
-
-// Cria o tabuleiro
-TicTacToe.prototype._createBoard = function () {
-  
-  // Cor da linhas
-  this._ctx.strokeStyle = "#596575";
-
-  // Espessura das linhas
-  this._ctx.lineWidth = 3;
-
-  // Desenha a linha vertical 1
-  this._ctx.beginPath();
-  this._ctx.moveTo(this._colWidth, 0);
-  this._ctx.lineTo(this._colWidth, this.canvasHeight);
-  this._ctx.stroke();
-
-  // Desenha a linha vertical 2
-  this._ctx.beginPath();
-  this._ctx.moveTo(2 * this._colWidth, 0);
-  this._ctx.lineTo(2 * this._colWidth, this.canvasHeight);
-  this._ctx.stroke();
-
-  // Desenha a linha horizontal 1
-  this._ctx.beginPath();
-  this._ctx.moveTo(0, this._rowHeight);
-  this._ctx.lineTo(this.canvasWidth, this._rowHeight);
-  this._ctx.stroke();
-
-  // Desenha a linha horizontal 2
-  this._ctx.beginPath();
-  this._ctx.moveTo(0, 2 * this._rowHeight);
-  this._ctx.lineTo(this.canvasWidth, 2 * this._rowHeight);
-  this._ctx.stroke();
-};
+}
