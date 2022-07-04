@@ -1,0 +1,43 @@
+body {
+  background: #3d4550;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  padding: 50px;
+}
+
+a {
+  color: #00b7ff;
+}
+
+#canvas {
+  cursor: pointer;
+  display: block;
+  margin: 0 auto;
+}
+
+#result {
+  display: block;
+  width: 400px;
+  margin: 50px auto;
+  color: #fff;
+  font-size: 32px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.btn-game {
+  width: 336px;
+  display: block;
+  background: #2c343e;
+  border: 5px solid #2c343e;
+  border-radius: 45px;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 700;
+  margin: 13px auto;
+  outline: none;
+  padding: 11px 30px;
+  text-transform: uppercase;
+}
+.btn-game:hover {
+  background: #363f4a;
+}

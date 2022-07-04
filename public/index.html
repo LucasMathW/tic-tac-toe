@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css" type="text/css" >
+  <script src="/socket.io/socket.io.js" ></script>
+  <title>tic-tac-toe</title>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  <div id="resul"></div>
+  <button id="btn-new-game" class="btn-game">Novo jogo</button>
+  <button id="btn-scoreboard" class="btn-game">Placar</button>
+  <button id="btn-reset-scoreboard" class="btn-game" >Zerar o placar</button>
+
+  <script type="module">
+
+    import createGame from './game.js'
+    import renderScream from './renderScream.js'
+    import createListenerClick from './listenerClick.js'
+
+    const canvas = document.getElementById('canvas')
+    const buttonNewGame = document.getElementById('btn-new-game')
+    const listenerClick = createListenerClick(document)
+    const game = createGame()
+    const socket = io()
+    
+    socket.on('connect', ()=> {
+      const playerId = socket.id
+      console.log(`player connected on client with id: ${playerId}`)
+      renderScream(canvas, game)
+    })
+
+    socket.on('setup', (state)=>{
+      const playerId = socket.id
+      game.setState(state)
+      listenerClick.subscribePlayer(playerId)
+      listenerClick.subscribeFunction(game.newMove)
+      listenerClick.subscribeFunction((command) => {
+        socket.emit('new-move', command)
+      })
+    })
+
+    socket.on("add-player", (command)=>{
+      // console.log('add-player index', command)
+      game.addPlayer(command)
+    })
+
+    socket.on('new-move', (command)=>{
+     const playerId = socket.id
+     if(playerId !== command.playerId){
+        game.newMove(command)
+     }
+    })
+
+    buttonNewGame.addEventListener('click', ()=>{
+      game.newGame()
+    })
+  </script>
+</body>
+</html>
