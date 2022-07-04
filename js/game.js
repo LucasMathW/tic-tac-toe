@@ -5,7 +5,7 @@ export default function ticTacToe(canvas){
   this.dimentionColun = 0
   this.dimentionRow = 0
 
-  this.contex = false
+  this.contex = ""
   this.status = ""
 
   this._matrix = ""
